@@ -17,7 +17,7 @@ app.secret_key = 'connection'
 # Enter your database connection details below
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] ='2415'
+app.config['MYSQL_PASSWORD'] = workbench_password
 app.config['MYSQL_DB'] = 'pythonlogin'
 
 # Intialize MySQL - flask_ext
@@ -39,7 +39,7 @@ def login():
         # using pymysql to connect in place of MySQLdb
         # conn = pymysql.connect("localhost","root","2415","pythonlogin" )
             # pymysql.connect() works 
-        conn = pymysql.connect(host = "localhost", user="root", password="2415", database="pythonlogin")
+        conn = pymysql.connect(host = "localhost", user="root", password=workbench_password, database="pythonlogin")
         cursor = conn.cursor(pymysql.cursors.DictCursor)
         
         # important to my change - Create a new connection and cursor that returns rows as dictionaries
@@ -85,7 +85,8 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        conn = pymysql.connect(host = "localhost", user="root", password="2415", database="pythonlogin")
+        conn = pymysql.connect(host = "localhost", user="root", 
+                               "2415", database="pythonlogin")
         cursor = conn.cursor(pymysql.cursors.DictCursor)
         cursor.execute('SELECT * FROM accounts WHERE username = %s', (username))
         # Close the cursor and connection
@@ -106,7 +107,7 @@ def register():
             cursor.execute('INSERT INTO accounts VALUES (NULL, %s, %s, %s)', (username, password, email))
             # To use commit you need to import from pymysql.connections import Connection
             #  takes the same arguments and some as pymysql.connect()
-            connection = Connection(host = "localhost", user="root", password="2415", database="pythonlogin")
+            connection = Connection(host = "localhost", user="root", password=workbench_password, database="pythonlogin")
             # to commit create the instance of the class Connection else TypeError: Missing 1 required positional argument: 'self'
             connection.commit()
             msg = 'You have successfully registered!'
@@ -131,7 +132,7 @@ def profile():
     # Check if user is loggedin
     if 'loggedin' in session:
         # We need all the account info for the user so we can display it on the profile page
-        conn = pymysql.connect(host = "localhost", user="root", password="2415", database="pythonlogin")
+        conn = pymysql.connect(host = "localhost", user="root", password=workbench_password, database="pythonlogin")
         cursor = conn.cursor(pymysql.cursors.DictCursor)
         cursor.execute('SELECT * FROM accounts WHERE id = %s', [session['id']])
         account = cursor.fetchone()
