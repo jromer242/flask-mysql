@@ -23,7 +23,7 @@ app.config['MYSQL_DB'] = 'pythonlogin'
 # Intialize MySQL - flask_ext
 mysql.init_app(app)
 
-# http://127.0.0.1:5000/pythonlogin/ - this will be the login page, we need to use both GET and POST requests
+# - this will be the login page, we need to use both GET and POST requests
 @app.route('/')
 @app.route('/pythonlogin/', methods=['GET', 'POST'])
 def login():
@@ -37,14 +37,9 @@ def login():
         
         # Check if account exists using MySQL
         # using pymysql to connect in place of MySQLdb
-        # conn = pymysql.connect("localhost","root","2415","pythonlogin" )
-            # pymysql.connect() works 
         conn = pymysql.connect(host = "localhost", user="root", password=workbench_password, database="pythonlogin")
-        cursor = conn.cursor(pymysql.cursors.DictCursor)
-        
         # important to my change - Create a new connection and cursor that returns rows as dictionaries
-        # conn = mysql.connect()
-        # cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
         cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s', (username, password))
         # Close the cursor and connection
         conn.close()
@@ -64,7 +59,7 @@ def login():
     # Show the login form with message (if any)
     return render_template('index.html', msg=msg)
 
-# http://localhost:5000/python/logout - this will be the logout page
+#  - this will be the logout page
 @app.route('/pythonlogin/logout')
 def logout():
     # Remove session data, this will log the user out
@@ -74,7 +69,7 @@ def logout():
    # Redirect to login page
    return redirect(url_for('login'))
 
-# http://127.0.0.1:5000/pythonlogin/register - this will be the registration page, we need to use both GET and POST requests
+#  - this will be the registration page, we need to use both GET and POST requests
 @app.route('/pythonlogin/register', methods=['GET', 'POST'])
 def register():
     # Output message if something goes wrong...
@@ -85,12 +80,10 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        conn = pymysql.connect(host = "localhost", user="root", 
-                               "2415", database="pythonlogin")
+        conn = pymysql.connect(host = "localhost", user="root", password = workbench_password, database="pythonlogin")
         cursor = conn.cursor(pymysql.cursors.DictCursor)
         cursor.execute('SELECT * FROM accounts WHERE username = %s', (username))
-        # Close the cursor and connection
-        # conn.close()
+        
         # Fetch one record and return result
         account = cursor.fetchone()
         # If account exists show error and validation checks
@@ -117,7 +110,7 @@ def register():
     # Show registration form with message (if any)
     return render_template('register.html', msg=msg)
 
-#  http://127.0.0.1:5000/pythonlogin/home
+#  - home
 @app.route('/pythonlogin/home')
 def home():
     # Check if user is loggedin
